@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import Cards from './components/Cards';
+import Nav from './components/Nav.jsx';
+import axios from 'axios';
+import { useState } from 'react';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+   const [characters, setCharacters] = useState([]);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+   const onSearch = (id) => {
+      axios(`https://rickandmortyapi.com/api/character/${id}`).then(({ data }) => {
+         if (data.name) {
+            if (characterAlreadyExists(data.id)) {
+               window.alert('¡Este personaje ya fue agregado!');
+               return;
+            }
+            setCharacters((oldChars) => [...oldChars, data]);
+         } else {
+            window.alert('¡No hay personajes con este ID!');
+         }
+      });
+   }
+   
+   const onClose = (id) => {
+      setCharacters((oldChars) => oldChars.filter((character) => character.id !== id));
+      console.log(id)
+   }
+
+   const addRandomCharacter = () => {
+      const id = Math.floor(Math.random() * 826) + 1;
+      onSearch(id);
+   }
+
+   const characterAlreadyExists = (id) => {
+      return characters.some((character) => character.id === id);
+   }
+
+   return (
+      <div className='App'>
+         <h1>Rick and Morty Character Showcase</h1>
+         <Nav onSearch={onSearch} addRandomCharacter={addRandomCharacter}/>
+         <Cards characters={characters} onClose={onClose}/>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+   );
 }
 
-export default App
+export default App;
+
