@@ -3,7 +3,8 @@ import Cards from './components/Cards';
 import Nav from './components/Nav.jsx';
 import axios from 'axios';
 import { useState } from 'react';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function App() {
    const [characters, setCharacters] = useState([]);
